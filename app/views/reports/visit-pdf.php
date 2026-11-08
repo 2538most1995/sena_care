@@ -54,7 +54,9 @@ table.formal-data {width:100%;border-collapse:collapse;font-size:15pt;table-layo
 .formal-caption {font-size:13pt;color:#657b94;margin:1.5mm 0 0}
 .formal-photo {width:100%;border-collapse:collapse;page-break-inside:avoid;margin:0 0 3mm}
 .formal-photo td {width:50%;text-align:center;border:0;padding:0 2mm;vertical-align:middle}
-.formal-photo .photo-frame {height:79mm;vertical-align:middle}
+.formal-photo .photo-frame {height:55mm;vertical-align:top}
+.formal-photo .photo-crop {width:82mm;border-collapse:collapse;margin:0 auto}
+.formal-photo .photo-crop td {width:82mm;height:55mm;padding:0;border:0;background-repeat:no-repeat;background-position:50% 50%}
 .formal-photo img {vertical-align:middle}
 .formal-signatures {width:100%;font-size:15pt;border-collapse:collapse;page-break-inside:avoid;margin-top:2mm}
 .formal-signatures td {width:50%;border:0;text-align:center;padding:1.5mm 1mm;line-height:1.25}
@@ -110,8 +112,10 @@ $notes($summaryItems);
 <?php foreach($pair as $photo):
     $path=APP_ROOT.'/public/uploads/visits/'.basename($photo['stored_name']);
     $size=is_file($path)?@getimagesize($path):false;
-    if($size && $size[0]>0 && $size[1]>0) { $scale=min(82/$size[0],78/$size[1]); $width=$size[0]*$scale; $height=$size[1]*$scale; }
-?><td class="photo-frame"><?php if($size): ?><img src="<?= $escape($path) ?>" style="width:<?= number_format($width,2,'.','') ?>mm;height:<?= number_format($height,2,'.','') ?>mm" /><?php else: ?><span class="formal-caption">ไม่พบไฟล์รูปภาพแนบ</span><?php endif; ?></td><?php endforeach; ?>
+    // mPDF table backgrounds support proportional width (4) or height (5) scaling.
+    // Select the covering dimension; the fixed cell clips the excess at its center.
+    if($size && $size[0]>0 && $size[1]>0) $resize=$size[0]/$size[1]>=82/55?5:4;
+?><td class="photo-frame"><?php if($size): ?><table class="photo-crop"><tr><td style="background-image:url('<?= $escape($path) ?>');background-image-resize:<?= $resize ?>">&nbsp;</td></tr></table><?php else: ?><span class="formal-caption">ไม่พบไฟล์รูปภาพแนบ</span><?php endif; ?></td><?php endforeach; ?>
 <?php if(count($pair)===1): ?><td></td><?php endif; ?>
 </tr><tr><?php foreach($pair as $photoIndex=>$photo): ?><td><p class="formal-caption">ภาพที่ <?= $pairIndex*2+$photoIndex+1 ?> &nbsp; <?= $escape(trim((string)($photo['caption']??''))?:'หลักฐานที่แนบในบันทึกเยี่ยมบ้าน') ?></p></td><?php endforeach; ?><?php if(count($pair)===1): ?><td></td><?php endif; ?></tr></table>
 <?php endforeach; ?>
