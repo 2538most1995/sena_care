@@ -30,7 +30,7 @@ class GraduateDocuments
         }
         if (count($matches) !== 1) return null;
         $fields = [];
-        foreach (['transcript_series', 'transcript_number', 'certificate_number', 'transcript_date', 'graduation_date'] as $key) {
+        foreach (['transcript_group', 'transcript_number', 'certificate_number', 'transcript_date', 'graduation_date'] as $key) {
             $value = $matches[0][$key] ?? null;
             $fields[$key] = is_string($value) || is_int($value) ? trim((string)$value) : '';
         }

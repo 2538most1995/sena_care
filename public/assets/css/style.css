@@ -2152,26 +2152,27 @@ body.lightbox-open {
 }
 
 .graduate-document-details {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.75rem 1rem;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    overflow-x: auto;
+    margin-top: 0.625rem;
+    padding-top: 0.625rem;
+    padding-bottom: 0.25rem;
     border-top: 1px solid var(--border);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
 }
+
+.graduate-document-details > div { flex: 1 0 auto; }
 
 .graduate-document-details span, .graduate-document-details strong {
     display: block;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
 }
 
 .graduate-document-details span { color: var(--text-muted); }
 .graduate-document-details strong { color: var(--text); }
-
-@media (max-width: 575.98px) {
-    .graduate-document-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
 
 .graduate-profile-meta {
     margin-top: 0.75rem;

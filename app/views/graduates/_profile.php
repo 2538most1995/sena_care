@@ -38,7 +38,7 @@ $documentDate = static function ($value): string {
     </div>
     <div class="graduate-document-details" aria-label="ข้อมูลเอกสารสำเร็จการศึกษา">
         <div><span>เลขที่ รบ.</span><strong><?= e(($documents['transcript_number'] ?? '') !== '' ? $documents['transcript_number'] : '–') ?></strong></div>
-        <div><span>ชุด รบ.</span><strong><?= e(($documents['transcript_series'] ?? '') !== '' ? $documents['transcript_series'] : '–') ?></strong></div>
+        <div><span>ชุด รบ.</span><strong><?= e(($documents['transcript_group'] ?? '') !== '' ? $documents['transcript_group'] : '–') ?></strong></div>
         <div><span>เลขที่ประกาศนียบัตร</span><strong><?= e(($documents['certificate_number'] ?? '') !== '' ? $documents['certificate_number'] : '–') ?></strong></div>
         <div><span>วันที่ออก รบ.</span><strong><?= e($documentDate($documents['transcript_date'] ?? null)) ?></strong></div>
         <div><span>วันที่จบ</span><strong><?= e($documentDate($documents['graduation_date'] ?? null)) ?></strong></div>

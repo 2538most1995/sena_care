@@ -17,14 +17,18 @@ class DocumentsFixtureApi extends SdlApiClient
 function checkDocuments(bool $ok, string $message): void { if (!$ok) throw new RuntimeException($message); }
 $api = new DocumentsFixtureApi([]);
 $graduate = ['student_code' => 'TEST001', 'graduation_term' => '2/2554', 'level_id' => 2];
-$row = ['code'=>'TEST001','graduation_term'=>'2/2554','level'=>['id'=>2],'transcript_number'=>'000123','transcript_series'=>'00001','certificate_number'=>'TEST-CERT-0001','transcript_date'=>'2012-03-30','graduation_date'=>'2012-03-30','citizen_id'=>'EXCLUDED'];
+$row = ['code'=>'TEST001','graduation_term'=>'2/2554','level'=>['id'=>2],'transcript_number'=>'000123','transcript_series'=>'นก','transcript_group'=>'00001','certificate_number'=>'TEST-CERT-0001','transcript_date'=>'2012-03-30','graduation_date'=>'2012-03-30','citizen_id'=>'EXCLUDED'];
 $api->pages = [1=>['data'=>[array_replace($row, ['code'=>'TEST0019'])], 'meta'=>['selected_term'=>'2/2554','pagination'=>['last_page'=>2]]], 2=>['data'=>[$row], 'meta'=>['selected_term'=>'2/2554','pagination'=>['last_page'=>2]]]];
 $service = new GraduateDocuments($api);
 $data = $service->find($graduate);
-checkDocuments($data['transcript_series'] === '00001', 'Leading zeroes must be retained');
+checkDocuments($data['transcript_group'] === '00001', 'Transcript group is used with its leading zeroes retained');
+checkDocuments(!array_key_exists('transcript_series', $data), 'Transcript series must not be used as the group');
 checkDocuments($data['transcript_number'] === '000123' && $data['certificate_number'] === 'TEST-CERT-0001', 'Document numbers are mapped correctly');
 checkDocuments($data['graduation_date'] === '2012-03-30', 'Graduation date is mapped correctly');
 checkDocuments(!str_contains(json_encode($data), 'EXCLUDED'), 'Only allowlisted fields are returned');
+$api->pages[2]['data'] = [array_diff_key($row, ['transcript_group'=>true])];
+checkDocuments($service->find($graduate)['transcript_group'] === '', 'Missing group must not fall back to series');
+$api->pages[2]['data'] = [$row];
 $api->pages[2]['data'][] = $row;
 checkDocuments($service->find($graduate) === null, 'Ambiguous identities must not show another record');
 $api->pages[2]['data'] = [array_replace($row, ['level'=>['id'=>3]])];
