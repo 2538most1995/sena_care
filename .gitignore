@@ -1,4 +1,5 @@
 /app/config/sdl.local.php
+/app/config/config.local.php
 /storage/cache/
 /storage/backups/
 /storage/logs/

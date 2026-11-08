@@ -23,7 +23,7 @@ if (!empty($docRoot) && strpos($appRoot, $docRoot) === 0) {
 }
 $autoAppUrl = rtrim($protocol . $host . $subPath, '/');
 
-return [
+$config = [
     // ── Application ──
     'app_name'    => 'ระบบติดตามและเยี่ยมบ้านผู้เรียน สกร.',
     'app_short'   => 'SENA Care',
@@ -78,3 +78,15 @@ return [
     // ── Log ──
     'log_path' => APP_ROOT . '/storage/logs',
 ];
+
+// โหลดการตั้งค่าเฉพาะของเซิร์ฟเวอร์จริง (หรือเครื่องเฉพาะ) ถ้ามี
+// ไฟล์ config.local.php จะไม่ถูก git track และไม่ถูกเขียนทับเวลาอัปโหลดโค้ดใหม่
+$localConfigFile = __DIR__ . '/config.local.php';
+if (is_file($localConfigFile)) {
+    $localConfig = require $localConfigFile;
+    if (is_array($localConfig)) {
+        $config = array_replace_recursive($config, $localConfig);
+    }
+}
+
+return $config;
