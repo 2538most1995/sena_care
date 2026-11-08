@@ -67,6 +67,7 @@ class VisitController
             'teacher_id'=>isTeacher()?currentUserId():null,'center_id'=>(int)($_GET['center_id']??0),
             'level'=>$_GET['level']??'','visit_status'=>$_GET['visit_status']??''];
         $studentsData=$this->studentModel->getAll($filters,$page,20);
+        $visitRounds=$this->visitModel->forEnrollments(array_column($studentsData['data'],'enrollment_id'),isTeacher()?currentUserId():null);
         $terms=$this->termModel->getActiveTerms();
         $groupSql="SELECT DISTINCT lc.id,lc.center_name FROM learning_centers lc JOIN enrollments e ON e.learning_center_id=lc.id WHERE e.academic_term_id=? AND NOT EXISTS(SELECT 1 FROM sdl_links sl WHERE sl.entity='student' AND sl.local_id=e.student_id AND sl.source_present=0)";
         $params=[$filters['term_id']];
@@ -311,11 +312,11 @@ class VisitController
             redirect(url('visits/' . $id));
         }
 
-        if (isTeacher() && (int)$visit['teacher_id'] !== currentUserId() && !canAccessStudent((int)$visit['student_id'])) {
+        if (isTeacher() && (int)$visit['teacher_id'] !== currentUserId() && !canAccessStudent((int)$visit['student_id'], (int)$visit['academic_term_id'])) {
             http_response_code(403); include APP_ROOT.'/app/views/errors/403.php'; return;
         }
 
-        $student = $this->studentModel->findById((int)$visit['student_id'], currentTermId());
+        $student = $this->studentModel->findById((int)$visit['student_id'], (int)$visit['academic_term_id']);
         if (!$student) {
             setFlash('danger', 'ไม่พบข้อมูลผู้เรียน');
             redirect(url('visits'));
@@ -357,7 +358,7 @@ class VisitController
             redirect(url('visits'));
         }
 
-        if (isTeacher() && (int)$visit['teacher_id'] !== currentUserId() && !canAccessStudent((int)$visit['student_id'])) {
+        if (isTeacher() && (int)$visit['teacher_id'] !== currentUserId() && !canAccessStudent((int)$visit['student_id'], (int)$visit['academic_term_id'])) {
             http_response_code(403); include APP_ROOT.'/app/views/errors/403.php'; return;
         }
 

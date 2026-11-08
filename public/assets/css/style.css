@@ -1902,6 +1902,12 @@ body.lightbox-open {
     min-width: max-content;
 }
 
+.visit-round-select {
+    width: 15rem;
+    max-width: 100%;
+    font-size: 0.8rem;
+}
+
 .action-buttons .btn-icon {
     margin: 0;
     vertical-align: middle;

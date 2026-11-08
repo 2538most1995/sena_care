@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initGraduatePanel();
     initBackLinks();
     initStudentPhones();
+    initVisitRoundSelection();
     document.getElementById('termFilter')?.addEventListener('change', async function () {
         const body = new URLSearchParams({term_id:this.value});
         try {
@@ -25,6 +26,28 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+
+/** Keep every row action on the selected round, including restored back navigation. */
+function initVisitRoundSelection() {
+    function sync(select) {
+        const id = select.value;
+        if (!/^\d+$/.test(id)) return;
+        const row = select.closest('tr');
+        const base = select.dataset.visitBase + '/' + id;
+        row.querySelectorAll('[data-visit-action]').forEach(action => {
+            const type = action.dataset.visitAction;
+            const suffix = { view: '', edit: '/edit', pdf: '/pdf', cancel: '/cancel' }[type];
+            if (suffix === undefined) return;
+            action.setAttribute(type === 'cancel' ? 'action' : 'href', base + suffix);
+        });
+    }
+    const selects = document.querySelectorAll('[data-visit-round]');
+    selects.forEach(select => {
+        sync(select);
+        select.addEventListener('change', () => sync(select));
+    });
+    window.addEventListener('pageshow', () => selects.forEach(sync));
+}
 
 /** Fetch profile phones only for visible roster rows; retain the local fallback. */
 function initStudentPhones() {

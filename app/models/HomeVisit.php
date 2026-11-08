@@ -21,6 +21,28 @@ class HomeVisit
         $this->pdo = Database::getConnection();
     }
 
+    /** Completed rounds for the authorized roster, fetched in one query. */
+    public function forEnrollments(array $ids, ?int $teacherId = null): array
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn($id) => $id > 0)));
+        if (!$ids) return [];
+        $slots = implode(',', array_fill(0, count($ids), '?'));
+        $params = $ids;
+        $scope = '';
+        if ($teacherId !== null) {
+            $scope = ' AND (hv.teacher_id=? OR e.teacher_id=? OR EXISTS(SELECT 1 FROM sdl_enrollment_teachers st WHERE st.enrollment_id=e.id AND st.teacher_id=?))';
+            array_push($params, $teacherId, $teacherId, $teacherId);
+        }
+        $stmt = $this->pdo->prepare("SELECT hv.id,hv.enrollment_id,hv.visit_date FROM home_visits hv
+            JOIN enrollments e ON e.id=hv.enrollment_id
+            WHERE hv.status='completed' AND hv.enrollment_id IN ($slots)$scope
+            ORDER BY hv.visit_date ASC,hv.id ASC");
+        $stmt->execute($params);
+        $rounds = [];
+        foreach ($stmt->fetchAll() as $visit) $rounds[(int)$visit['enrollment_id']][] = $visit;
+        return $rounds;
+    }
+
     public function findById(int $id): ?array
     {
         $teacherName=TeacherAssignment::nameSql();
