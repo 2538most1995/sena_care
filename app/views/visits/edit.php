@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
             weight: 3,
             fillOpacity: 1
         }).bindPopup('<strong>ตำแหน่งเช็คอินปัจจุบัน</strong>').addTo(map);
-        map.fitBounds([[homeLat, homeLng], [initCheckinLat, initCheckinLng]], { padding: [30, 30] });
+        map.fitBounds([[homeLat, homeLng], [initCheckinLat, initCheckinLng]], { padding: [30, 30], maxZoom: 15 });
     }
 
     // Checkin button handler
@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }).bindPopup('<strong>ตำแหน่งเช็คอินของคุณ</strong>').addTo(map);
             }
 
-            map.fitBounds([[homeLat, homeLng], [lat, lng]], { padding: [30, 30] });
+            map.fitBounds([[homeLat, homeLng], [lat, lng]], { padding: [30, 30], maxZoom: 15 });
             showToast('success', 'เช็คอินพิกัดใหม่เรียบร้อย');
         } catch (err) {
             showToast('danger', err.message);

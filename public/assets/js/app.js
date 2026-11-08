@@ -40,13 +40,42 @@ function initVisitRoundSelection() {
             if (suffix === undefined) return;
             action.setAttribute(type === 'cancel' ? 'action' : 'href', base + suffix);
         });
+        row.querySelectorAll('[data-visit-choice]').forEach(choice => {
+            const selected = choice.dataset.visitId === id;
+            choice.classList.toggle('active', selected);
+            choice.setAttribute('aria-current', String(selected));
+            if (selected) row.querySelector('[data-visit-round-label]').textContent = choice.dataset.visitLabel;
+        });
     }
     const selects = document.querySelectorAll('[data-visit-round]');
-    selects.forEach(select => {
+    function restore(select) {
+        const saved = window.history.state?.visitRounds?.[select.dataset.visitEnrollment];
+        const choices = select.closest('tr').querySelectorAll('[data-visit-choice]');
+        if (saved && [...choices].some(choice => choice.dataset.visitId === saved)) select.value = saved;
         sync(select);
+    }
+    selects.forEach(select => {
+        restore(select);
         select.addEventListener('change', () => sync(select));
+        const dropdown = select.closest('.dropdown');
+        const toggle = dropdown?.querySelector('[data-bs-toggle="dropdown"]');
+        if (toggle && window.bootstrap?.Dropdown) {
+            bootstrap.Dropdown.getOrCreateInstance(toggle, {
+                popperConfig: config => ({ ...config, strategy: 'fixed' })
+            });
+        }
+        dropdown?.querySelectorAll('[data-visit-choice]').forEach(choice => {
+            choice.addEventListener('click', () => {
+                select.value = choice.dataset.visitId;
+                sync(select);
+                const state = window.history.state || {};
+                window.history.replaceState({ ...state, visitRounds: {
+                    ...state.visitRounds, [select.dataset.visitEnrollment]: select.value
+                } }, '');
+            });
+        });
     });
-    window.addEventListener('pageshow', () => selects.forEach(sync));
+    window.addEventListener('pageshow', () => selects.forEach(restore));
 }
 
 /** Fetch profile phones only for visible roster rows; retain the local fallback. */

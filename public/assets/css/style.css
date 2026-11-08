@@ -1902,9 +1902,18 @@ body.lightbox-open {
     min-width: max-content;
 }
 
-.visit-round-select {
-    width: 15rem;
-    max-width: 100%;
+.visit-round-toggle {
+    border: 0;
+    cursor: pointer;
+}
+
+.visit-round-toggle:hover { filter: brightness(0.9); }
+.visit-round-toggle:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 3px; }
+
+.visit-round-menu {
+    min-width: 15rem;
+    max-height: min(18rem, 60vh);
+    overflow-y: auto;
     font-size: 0.8rem;
 }
 

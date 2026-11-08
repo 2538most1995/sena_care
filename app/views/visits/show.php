@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fillOpacity: 1
         }).bindPopup('<strong>ตำแหน่งที่ครูเช็คอิน</strong>').addTo(map);
 
-        map.fitBounds([[homeLat, homeLng], [checkinLat, checkinLng]], { padding: [30, 30] });
+        map.fitBounds([[homeLat, homeLng], [checkinLat, checkinLng]], { padding: [30, 30], maxZoom: 15 });
     }
 });
 </script>

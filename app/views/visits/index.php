@@ -15,12 +15,20 @@
 <?php $rounds=$visitRounds[(int)$row['enrollment_id']]??[]; $selectedVisit=$rounds ? (int)$rounds[count($rounds)-1]['id'] : null; ?>
 <tr><td><strong><?= e($row['prefix'].$row['firstname'].' '.$row['lastname']) ?></strong><br><small class="text-muted"><?= e($row['student_code']) ?> · <?= e(educationLevelName($row['education_level'])) ?></small></td><td><?= e($row['center_name']??'-') ?><br><small class="text-muted"><?= e($row['group_teacher_name']?:'ยังไม่ระบุครูประจำกลุ่ม') ?></small></td><td>
 <?php if($rounds): ?>
-<span class="badge bg-success mb-2">เยี่ยมแล้ว <?= count($rounds) ?> ครั้ง</span>
-<select class="form-select form-select-sm visit-round-select" data-visit-round data-visit-base="<?= e(url('visits')) ?>" aria-label="เลือกครั้งที่เยี่ยมของ <?= e($row['prefix'].$row['firstname'].' '.$row['lastname']) ?>">
+<?php if(count($rounds)>1): ?>
+<div class="dropdown d-inline-block">
+<button type="button" class="badge bg-success dropdown-toggle visit-round-toggle" data-bs-toggle="dropdown" aria-expanded="false" aria-label="เลือกครั้งที่เยี่ยมของ <?= e($row['prefix'].$row['firstname'].' '.$row['lastname']) ?>">เยี่ยมแล้ว <?= count($rounds) ?> ครั้ง</button>
+<input type="hidden" data-visit-round data-visit-enrollment="<?= (int)$row['enrollment_id'] ?>" data-visit-base="<?= e(url('visits')) ?>" value="<?= $selectedVisit ?>">
+<ul class="dropdown-menu visit-round-menu">
 <?php for($i=count($rounds)-1;$i>=0;$i--): $round=$rounds[$i]; ?>
-<option value="<?= (int)$round['id'] ?>" <?= (int)$round['id']===$selectedVisit?'selected':'' ?>>ครั้งที่ <?= $i+1 ?> · <?= e(thaiDate($round['visit_date'],'short')) ?></option>
+<li><button type="button" class="dropdown-item <?= (int)$round['id']===$selectedVisit?'active':'' ?>" data-visit-choice data-visit-id="<?= (int)$round['id'] ?>" data-visit-label="ครั้งที่ <?= $i+1 ?> · <?= e(thaiDate($round['visit_date'],'short')) ?>" aria-current="<?= (int)$round['id']===$selectedVisit?'true':'false' ?>">ครั้งที่ <?= $i+1 ?> · <?= e(thaiDate($round['visit_date'],'short')) ?></button></li>
 <?php endfor; ?>
-</select>
+</ul>
+</div>
+<div class="small text-muted mt-1" data-visit-round-label aria-live="polite">ครั้งที่ <?= count($rounds) ?> · <?= e(thaiDate($rounds[count($rounds)-1]['visit_date'],'short')) ?></div>
+<?php else: ?>
+<span class="badge bg-success">เยี่ยมแล้ว 1 ครั้ง</span><br><small class="text-muted"><?= e(thaiDate($rounds[0]['visit_date'],'short')) ?></small>
+<?php endif; ?>
 <?php else: ?><span class="badge bg-secondary">ยังไม่เยี่ยม</span><?php endif; ?></td>
 <td class="text-center"><div class="action-buttons action-buttons-nowrap gap-2">
 <?php if(canCreateVisitForCenter((int)($row['learning_center_id'] ?? 0))): ?><a class="btn btn-sm <?= $row['visit_count']?'btn-outline-primary':'btn-primary' ?> btn-icon" href="<?= e(url('visits/create/'.$row['id'].'?term_id='.$filters['term_id'])) ?>" title="<?= $row['visit_count']?'บันทึกการเยี่ยมครั้งใหม่':'บันทึกเยี่ยมบ้าน' ?>" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-house-heart<?= $row['visit_count']?'':'-fill' ?>"></i></a><?php elseif(isTeacher()): ?><button type="button" class="btn btn-sm btn-outline-secondary btn-icon" disabled title="ปิดรับการเยี่ยมบ้านสำหรับศกร.นี้" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-lock"></i></button><?php endif; ?>
