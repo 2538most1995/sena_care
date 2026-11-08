@@ -1,5 +1,14 @@
-/app/config/sdl.local.php
-/app/config/config.local.php
+# Machine/server settings and credentials (keep *.example.php templates).
+/app/config/*.local.php
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Runtime data, private documents, backups and dependencies.
 /storage/cache/
 /storage/backups/
 /storage/logs/
@@ -11,4 +20,24 @@
 /public/uploads/**
 !/public/uploads/**/
 !/public/uploads/**/.gitkeep
+/storage/private_uploads/**
+!/storage/private_uploads/**/
+!/storage/private_uploads/**/.gitkeep
+*.log
+*.bak
+*.backup
+*.sql.gz
+*.sql.zip
+*.dump
+*.sqlite
+*.sqlite3
+
+# Generated deployment packages; their source folders stay versioned.
+/deployment/*.zip
+/public/test.txt
+
+# Local editor/browser automation files.
+.playwright-cli/
+.idea/
+.vscode/
 .DS_Store

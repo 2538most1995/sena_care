@@ -3,6 +3,7 @@ if (!defined('APP_ROOT')) die('Direct access not permitted');
 require_once APP_ROOT . '/app/models/Graduate.php';
 require_once APP_ROOT . '/app/services/SdlApiClient.php';
 require_once APP_ROOT . '/app/services/GraduateSyncService.php';
+require_once APP_ROOT . '/app/services/GraduateDocuments.php';
 require_once APP_ROOT . '/app/services/ImageUploader.php';
 
 class GraduateController
@@ -77,6 +78,7 @@ class GraduateController
             $this->panelResponse($graduate, $trackings);
         }
 
+        [$graduateDocuments, $documentsUnavailable] = $this->graduateDocuments($graduate);
         $pageTitle = 'ติดตามผู้สำเร็จการศึกษา: ' . $graduate['full_name'];
         $currentPage = 'graduates';
         include APP_ROOT . '/app/views/layouts/header.php';
@@ -214,6 +216,7 @@ class GraduateController
         }
 
         $categories = self::CATEGORIES;
+        [$graduateDocuments, $documentsUnavailable] = $this->graduateDocuments($graduate);
         if (isAjaxRequest()) {
             $isPanel = true;
             ob_start();
@@ -227,8 +230,21 @@ class GraduateController
         include APP_ROOT . '/app/views/layouts/footer.php';
     }
 
+    private function graduateDocuments(array $graduate): array
+    {
+        $api = (new SdlApiClient())->withTimeout(5);
+        if (!$api->enabled()) return [null, true];
+        try {
+            return [(new GraduateDocuments($api))->find($graduate), false];
+        } catch (Throwable $error) {
+            error_log('SDL graduate documents unavailable');
+            return [null, true];
+        }
+    }
+
     private function panelResponse(array $graduate, array $trackings, string $message = ''): void
     {
+        [$graduateDocuments, $documentsUnavailable] = $this->graduateDocuments($graduate);
         $categories = self::CATEGORIES;
         $canTrack = hasRole('super_admin', 'admin', 'teacher');
         $isPanel = true;
