@@ -1,0 +1,57 @@
+diff --git a/laravel-app/app/Console/Commands/CreateStudentDataApiToken.php b/laravel-app/app/Console/Commands/CreateStudentDataApiToken.php
+index 44efdbe..1d9b395 100644
+--- a/laravel-app/app/Console/Commands/CreateStudentDataApiToken.php
++++ b/laravel-app/app/Console/Commands/CreateStudentDataApiToken.php
+@@ -16,6 +16,7 @@ final class CreateStudentDataApiToken extends Command
+         {--name=student-data-integration : ชื่อ client สำหรับตรวจสอบย้อนหลัง}
+         {--district-code= : รหัสอำเภอ (จำเป็นสำหรับ super_admin)}
+         {--expires-in-days=90 : อายุ token เป็นวัน (1-365)}
++        {--sena-care : อนุญาตอ่านรายชื่อครูและตรวจสอบรหัสผ่านครูสำหรับ SENA Care}
+         {--replace : เพิกถอน client ชื่อเดิมในอำเภอนี้ก่อนสร้างใหม่}';
+ 
+     protected $description = 'Create a district-scoped, read-only Bearer token for the Student Data API';
+@@ -68,7 +69,9 @@ public function handle(): int
+                 'user_id' => $user->id,
+                 'district_id' => $district->id,
+                 'token_hash' => hash('sha256', $plainToken),
+-                'abilities' => ['student-data:read'],
++                'abilities' => $this->option('sena-care')
++                    ? ['student-data:read', 'sena-care:teachers', 'sena-care:authenticate']
++                    : ['student-data:read'],
+                 'expires_at' => now()->addDays($expiresInDays),
+             ]);
+         });
+diff --git a/laravel-app/app/Http/Middleware/AuthenticateStudentDataClient.php b/laravel-app/app/Http/Middleware/AuthenticateStudentDataClient.php
+index eb28d8c..394429f 100644
+--- a/laravel-app/app/Http/Middleware/AuthenticateStudentDataClient.php
++++ b/laravel-app/app/Http/Middleware/AuthenticateStudentDataClient.php
+@@ -78,6 +78,7 @@ public function handle(Request $request, Closure $next): Response
+         $request->setUserResolver(static fn (): User => $user);
+         $request->attributes->set('district_id', $districtId);
+         $request->attributes->set('student_api_client_id', (int) $client->id);
++        $request->attributes->set('student_api_client', $client);
+ 
+         if ($client->last_used_at === null || $client->last_used_at->lt(now()->subMinutes(5))) {
+             $client->forceFill(['last_used_at' => now()])->save();
+diff --git a/laravel-app/routes/api.php b/laravel-app/routes/api.php
+index 5ddf3cf..2dbe5ab 100644
+--- a/laravel-app/routes/api.php
++++ b/laravel-app/routes/api.php
+@@ -12,6 +12,7 @@
+ use App\Http\Controllers\Api\Admin\UserController;
+ use App\Http\Controllers\Api\Auth\DistrictOptionsController;
+ use App\Http\Controllers\Api\Auth\PublicBrandingController;
++use App\Http\Controllers\Api\Integrations\SenaCareTeacherController;
+ use App\Http\Controllers\Api\Integrations\StudentDataController;
+ use App\Http\Controllers\Api\Learning\AssignmentWorkflowController;
+ use App\Http\Controllers\Api\Learning\CalendarController;
+@@ -68,6 +69,9 @@
+         'role:admin,super_admin',
+         'throttle:student-data-api',
+     ])->prefix('integrations/student-data')->group(function (): void {
++        Route::get('/teachers', [SenaCareTeacherController::class, 'index']);
++        Route::get('/groups', [SenaCareTeacherController::class, 'groups']);
++        Route::post('/teacher-authenticate', [SenaCareTeacherController::class, 'authenticate']);
+         Route::get('/students', [StudentDataController::class, 'index']);
+         Route::get('/students/{student}', [StudentDataController::class, 'show']);
+         Route::get('/students/{student}/grades', [StudentDataController::class, 'grades']);

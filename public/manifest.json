@@ -1,0 +1,21 @@
+{
+  "name": "ระบบติดตามและเยี่ยมบ้านผู้เรียน สกร.",
+  "short_name": "SENA Care",
+  "description": "ระบบติดตามและเยี่ยมบ้านผู้เรียน สกร. ระดับอำเภอเสนา",
+  "start_url": "/sena_care/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#04395e",
+  "icons": [
+    {
+      "src": "/sena_care/public/assets/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/sena_care/public/assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

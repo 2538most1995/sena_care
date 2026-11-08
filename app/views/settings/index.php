@@ -1,0 +1,4 @@
+<?php if(!defined('APP_ROOT')) die(); ?>
+<div class="container-fluid px-3 px-md-4 py-3"><h4 class="fw-bold">ตั้งค่าระบบ SENA Care</h4>
+<p class="text-muted">ข้อมูลครูและผู้เรียนใช้จาก SDL_school API เท่านั้น</p>
+<div class="row g-3"><?php foreach(['users/'.currentUserId().'/edit'=>['บัญชี super admin','แก้ไขข้อมูลส่วนตัว ชื่อผู้ใช้ และรหัสผ่าน'],'integrations/sdl'=>['เชื่อมต่อ SDL_school','ซิงก์ครู ผู้เรียน และกลุ่มเรียนจากข้อมูลจริง'],'terms'=>['ภาคเรียน','กำหนดภาคเรียนทำงาน'],'centers'=>['ศกร. / กลุ่มเรียน','ตรวจสอบการผูกกลุ่มเรียนและครู']] as $path=>$item): ?><div class="col-12 col-md-6"><a class="card card-body shadow-sm border-0 h-100 text-decoration-none" href="<?= e(url($path)) ?>"><h5><?= e($item[0]) ?></h5><span class="text-muted"><?= e($item[1]) ?></span></a></div><?php endforeach; ?></div></div>

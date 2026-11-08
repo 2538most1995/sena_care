@@ -1,0 +1,5 @@
+-- Safe repair: preserves all historical question and answer rows.
+-- The PHP migration compares full definitions (including options and risk rules).
+-- Run from the project root after backing up the database:
+-- php scripts/repair-survey-duplicates.php
+-- Do not DELETE assessment_answers or assessment_questions to hide duplicates.

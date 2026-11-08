@@ -1,0 +1,13 @@
+/app/config/sdl.local.php
+/storage/cache/
+/storage/backups/
+/storage/logs/
+
+/vendor/
+/storage/pdf-cache/
+/output/
+/tmp/
+/public/uploads/**
+!/public/uploads/**/
+!/public/uploads/**/.gitkeep
+.DS_Store

@@ -1,0 +1,26 @@
+        $data = (new StudentDataIntegrationResource($record))->resolve($request);
+        if ($request->boolean('include_personal')) {
+            // Explicit allowlist: never export citizenId, demographics wholesale, or raw payloads.
+            $profile = $this->directory->profileDetails($request->user(), $record);
+            $data['personal'] = [
+                'birthdate_display' => $record->demographics['birth_date'] ?? null,
+                'gender' => $record->demographics['gender'] ?? null,
+                'occupation' => $profile['personal']['occupation_label'] ?? null,
+                'phone' => $record->phone,
+                'email' => $record->contact['email_masked'] ?? null,
+            ];
+            $data['guardians'] = [];
+            foreach (['father' => 'บิดา', 'mother' => 'มารดา', 'guardian' => 'ผู้ปกครอง'] as $key => $relationship) {
+                $member = $profile['family'][$key] ?? [];
+                if (trim((string) ($member['name'] ?? '')) === '') continue;
+                $data['guardians'][] = [
+                    'name' => $member['name'],
+                    'relationship' => $relationship,
+                    'occupation' => $member['occupation_label'] ?? null,
+                ];
+            }
+        }
+        return $this->respond([
+            'data' => $data,
+            'meta' => $this->integrationMeta(),
+        ]);

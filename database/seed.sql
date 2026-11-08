@@ -1,0 +1,5 @@
+-- SENA Care uses real students and teachers from SDL_school API only.
+-- No demo users, students, enrollments, visits or notifications are inserted.
+-- Install database.sql, sdl_integration.sql, student_surveys.sql; configure SDL_school,
+-- then run php scripts/sdl-sync.php to import the authorized source.
+-- Existing local super administrator is retained and editable in /users.

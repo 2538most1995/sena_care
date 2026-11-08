@@ -1,0 +1,14 @@
+{
+  "laravel-app/app/Http/Middleware/AuthenticateStudentDataClient.php": {
+    "before": "42acfc742b765e3fc8abdcc76a3788fef782b54182d10676b6be671fb0190b1f",
+    "after": "c0406b133fb593626692f4e47a230d055dbef089764bef6ef0c8e7d4a44507bb"
+  },
+  "laravel-app/app/Console/Commands/CreateStudentDataApiToken.php": {
+    "before": "1d6843934f3b78ab714a39d0494523d8651470b1482a8315ab8f6f6cba25d5be",
+    "after": "3d0fad09ee941c00d549485c88f42624204db5485ab287cdab6e0cc6668a0f47"
+  },
+  "laravel-app/database/migrations/2026_10_19_000036_allow_non_expiring_student_api_clients.php": {
+    "before": null,
+    "after": "0e172c3957ec4abb2ae35b50fc5af2f4e3a23e3b4eab7155eb69ef8a7da9282d"
+  }
+}
