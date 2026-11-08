@@ -17,11 +17,11 @@
 <?php if($rounds): ?>
 <?php if(count($rounds)>1): ?>
 <div class="dropdown d-inline-block">
-<button type="button" class="badge bg-success dropdown-toggle visit-round-toggle" data-bs-toggle="dropdown" aria-expanded="false" aria-label="เลือกครั้งที่เยี่ยมของ <?= e($row['prefix'].$row['firstname'].' '.$row['lastname']) ?>">เยี่ยมแล้ว <?= count($rounds) ?> ครั้ง</button>
+<button type="button" class="badge bg-success dropdown-toggle visit-round-toggle" data-bs-toggle="dropdown" aria-expanded="false" aria-label="เลือกครั้งที่เยี่ยมของ <?= e($row['prefix'].$row['firstname'].' '.$row['lastname']) ?>"><span data-visit-status-label>เยี่ยมครั้งที่ <?= count($rounds) ?></span></button>
 <input type="hidden" data-visit-round data-visit-enrollment="<?= (int)$row['enrollment_id'] ?>" data-visit-base="<?= e(url('visits')) ?>" value="<?= $selectedVisit ?>">
 <ul class="dropdown-menu visit-round-menu">
 <?php for($i=count($rounds)-1;$i>=0;$i--): $round=$rounds[$i]; ?>
-<li><button type="button" class="dropdown-item <?= (int)$round['id']===$selectedVisit?'active':'' ?>" data-visit-choice data-visit-id="<?= (int)$round['id'] ?>" data-visit-label="ครั้งที่ <?= $i+1 ?> · <?= e(thaiDate($round['visit_date'],'short')) ?>" aria-current="<?= (int)$round['id']===$selectedVisit?'true':'false' ?>">ครั้งที่ <?= $i+1 ?> · <?= e(thaiDate($round['visit_date'],'short')) ?></button></li>
+<li><button type="button" class="dropdown-item <?= (int)$round['id']===$selectedVisit?'active':'' ?>" data-visit-choice data-visit-id="<?= (int)$round['id'] ?>" data-visit-round-number="<?= $i+1 ?>" data-visit-label="ครั้งที่ <?= $i+1 ?> · <?= e(thaiDate($round['visit_date'],'short')) ?>" aria-current="<?= (int)$round['id']===$selectedVisit?'true':'false' ?>">ครั้งที่ <?= $i+1 ?> · <?= e(thaiDate($round['visit_date'],'short')) ?></button></li>
 <?php endfor; ?>
 </ul>
 </div>

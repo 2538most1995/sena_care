@@ -44,7 +44,10 @@ function initVisitRoundSelection() {
             const selected = choice.dataset.visitId === id;
             choice.classList.toggle('active', selected);
             choice.setAttribute('aria-current', String(selected));
-            if (selected) row.querySelector('[data-visit-round-label]').textContent = choice.dataset.visitLabel;
+            if (selected) {
+                row.querySelector('[data-visit-round-label]').textContent = choice.dataset.visitLabel;
+                row.querySelector('[data-visit-status-label]').textContent = 'เยี่ยมครั้งที่ ' + choice.dataset.visitRoundNumber;
+            }
         });
     }
     const selects = document.querySelectorAll('[data-visit-round]');
