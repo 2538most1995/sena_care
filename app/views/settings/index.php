@@ -17,10 +17,14 @@
                         <?php foreach ($fields as $key): [$label,$max] = ReportSettings::TEXT_FIELDS[$key]; ?>
                         <div class="col-12">
                             <label class="form-label" for="<?= e($key) ?>"><?= e($label) ?></label>
+                            <?php if (in_array($key, ['director_position','reporter_position'], true)): ?>
+                            <textarea class="form-control" id="<?= e($key) ?>" name="<?= e($key) ?>" rows="3" maxlength="<?= $max ?>" aria-describedby="<?= e($key) ?>_help"><?= e($key === 'director_position' ? ReportSettings::directorPositionForReport($reportSettings[$key]) : $reportSettings[$key]) ?></textarea>
+                            <div class="form-text" id="<?= e($key) ?>_help">กด Enter เพื่อขึ้นบรรทัดใหม่ใน PDF ได้ตามต้องการ</div>
+                            <?php else: ?>
                             <input class="form-control" id="<?= e($key) ?>" name="<?= e($key) ?>" value="<?= e($reportSettings[$key]) ?>" maxlength="<?= $max ?>">
+                            <?php endif; ?>
                             <?php if ($key === 'reporter_name'): ?><div class="form-text">เว้นว่างเพื่อใช้ชื่อครูเจ้าของบันทึกในแต่ละรายงาน</div><?php endif; ?>
                             <?php if ($key === 'director_name'): ?><div class="form-text">เว้นว่างเพื่อเว้นช่องให้กรอกชื่อผู้ลงนามภายหลัง</div><?php endif; ?>
-                            <?php if ($key === 'director_position'): ?><div class="form-text">พิมพ์ตำแหน่งเต็มหรือข้อความรักษาการแทนได้</div><?php endif; ?>
                         </div>
                         <?php endforeach; ?>
                     </div>

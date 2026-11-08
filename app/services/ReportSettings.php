@@ -34,6 +34,14 @@ class ReportSettings
             'show_reporter'=>true, 'show_director'=>true, 'show_date'=>true];
     }
 
+    /** Keep explicit line breaks; split legacy acting-director text for the signature. */
+    public static function directorPositionForReport(string $position): string
+    {
+        $position = str_replace(["\r\n", "\r"], "\n", $position);
+        if (str_contains($position, "\n")) return $position;
+        return preg_replace('/(รักษาการ(?:ในตำแหน่ง)?|รักษาราชการแทน)\h*(?=ผู้อำนวยการ)/u', "$1\n", $position, 1);
+    }
+
     public function load(): array
     {
         if (!is_file($this->path)) return self::defaults();
@@ -49,6 +57,7 @@ class ReportSettings
             $value = $input[$key] ?? $values[$key];
             if (!is_string($value)) throw new InvalidArgumentException($label . ' ต้องเป็นข้อความ');
             $value = trim($value);
+            if (in_array($key, ['director_position', 'reporter_position'], true)) $value = str_replace(["\r\n", "\r"], "\n", $value);
             if (mb_strlen($value) > $max) throw new InvalidArgumentException($label . ' ต้องไม่เกิน ' . $max . ' ตัวอักษร');
             $values[$key] = $value;
         }

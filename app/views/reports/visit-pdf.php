@@ -34,7 +34,9 @@ $coordinate=function($lat,$lng) {
 };
 $checkin=$coordinate($v['checkin_latitude']??null,$v['checkin_longitude']??null);
 $home=$coordinate($v['home_lat']??null,$v['home_lng']??null);
-$mapUrl=$checkin?'https://www.google.com/maps?q='.rawurlencode($checkin):null;
+$mapCoordinate=$checkin??$home;
+$mapLabel=$checkin?'ตำแหน่งเช็คอิน':'บ้านผู้เรียน';
+$mapUrl=$mapCoordinate?'https://www.google.com/maps?q='.rawurlencode($mapCoordinate):null;
 ?>
 <style>
 body {font-family:thsarabun;font-size:16pt;line-height:1.17;color:#263c53}
@@ -126,7 +128,7 @@ foreach($v['followups']??[] as $task): ?><p class="formal-caption"><?= $escape($
 <b>พิกัดเช็คอิน:</b> <?= $escape($checkin??'ไม่ได้บันทึก') ?><br>
 <b>พิกัดบ้านผู้เรียน:</b> <?= $escape($home??'ไม่ได้บันทึก') ?><br>
 <b>ระยะห่างจากบ้าน:</b> <?= isset($v['distance_from_home'])?number_format((int)$v['distance_from_home']).' เมตร':'ไม่ได้บันทึก' ?>
-<?php if($mapUrl): ?><br><a href="<?= $escape($mapUrl) ?>" style="color:#344d66">เปิดแผนที่ตำแหน่งเช็คอิน</a><?php endif; ?>
+<?php if($mapUrl): ?><br><a href="<?= $escape($mapUrl) ?>" style="color:#344d66">เปิดแผนที่<?= $escape($mapLabel) ?></a><?php endif; ?>
 </td><?php if($mapUrl): ?><td style="width:30mm;text-align:center"><barcode code="<?= $escape($mapUrl) ?>" type="QR" size="0.8" error="M" /><br><span class="small">สแกนเปิดแผนที่</span></td><?php endif; ?></tr></table>
 
 <?php if ($signatures['show_reporter'] || $signatures['show_director']): ?>
