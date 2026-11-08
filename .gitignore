@@ -1,5 +1,6 @@
 # Machine/server settings and credentials (keep *.example.php templates).
 /app/config/*.local.php
+/app/config/.report-*
 .env
 .env.*
 !.env.example

@@ -1,6 +1,7 @@
 <?php
 if (!defined('APP_ROOT')) die('Direct access not permitted');
 require_once APP_ROOT.'/app/models/AssessmentQuestion.php';
+require_once APP_ROOT.'/app/services/ReportSettings.php';
 
 /** Shared A4 document and individual visit layout for print and teacher exports. */
 class VisitReportPdf
@@ -26,8 +27,10 @@ class VisitReportPdf
         return $pdf;
     }
 
-    public static function html(array $v, string $director = ''): string
+    public static function html(array $v, ?string $director = null, ?array $signatures = null): string
     {
+        $signatures ??= (new ReportSettings())->load();
+        if ($director !== null) $signatures['director_name'] = $director;
         $sections=['family'=>[],'learning'=>[],'needs'=>[],'recommendation'=>[],'other'=>[]];
         $labels=[
             'ลักษณะที่อยู่อาศัย'=>'ที่อยู่อาศัย','สภาพที่อยู่อาศัยโดยรวม'=>'สภาพที่พัก',
@@ -66,10 +69,10 @@ class VisitReportPdf
         return ob_get_clean();
     }
 
-    public function pdf(array $visit): string
+    public function pdf(array $visit, ?array $signatures = null): string
     {
         $pdf=self::document('รายงานผลการเยี่ยมบ้านผู้เรียน - '.$visit['firstname'].' '.$visit['lastname']);
-        foreach(explode('<!--REPORT_CHUNK-->',self::html($visit)) as $chunk) $pdf->WriteHTML($chunk);
+        foreach(explode('<!--REPORT_CHUNK-->',self::html($visit, null, $signatures)) as $chunk) $pdf->WriteHTML($chunk);
         return $pdf->Output('',\Mpdf\Output\Destination::STRING_RETURN);
     }
 }

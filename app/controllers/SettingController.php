@@ -8,9 +8,41 @@
 if (!defined('APP_ROOT')) {
     die('Direct access not permitted');
 }
+require_once APP_ROOT . '/app/services/ReportSettings.php';
 
 class SettingController
 {
+    public function settings(?ReportSettings $store = null): void
+    {
+        requireRole('super_admin');
+        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        if (!in_array($method, ['GET','POST'], true)) { http_response_code(405); header('Allow: GET, POST'); return; }
+        $store ??= new ReportSettings();
+        $reportSettings = $store->load();
+        $settingsError = '';
+        if ($method === 'POST') {
+            requireCsrf();
+            try {
+                $store->save($_POST);
+                setFlash('success', 'บันทึกชื่อผู้ลงนามและรูปแบบการลงนามแล้ว');
+                redirect(url('settings'));
+            } catch (InvalidArgumentException $error) {
+                http_response_code(422);
+                $settingsError = $error->getMessage();
+            } catch (Throwable $error) {
+                http_response_code(500);
+                error_log('Report settings save failed');
+                $settingsError = 'บันทึกไม่สำเร็จ กรุณาตรวจสอบสิทธิ์เขียนโฟลเดอร์ตั้งค่าบนเซิร์ฟเวอร์';
+            }
+            foreach (ReportSettings::TEXT_FIELDS as $key => $field) if (is_string($_POST[$key] ?? null)) $reportSettings[$key] = $_POST[$key];
+            foreach (ReportSettings::CHECKBOXES as $key => $label) $reportSettings[$key] = ($_POST[$key] ?? '') === '1';
+        }
+        $pageTitle = 'ตั้งค่าระบบ'; $currentPage = 'settings';
+        include APP_ROOT . '/app/views/layouts/header.php';
+        include APP_ROOT . '/app/views/settings/index.php';
+        include APP_ROOT . '/app/views/layouts/footer.php';
+    }
+
     private AcademicTerm $termModel;
     private LearningCenter $centerModel;
 

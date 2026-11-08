@@ -32,8 +32,11 @@ class TeacherVisitReport
         ];
     }
 
-    public function pdf(array $report, string $director = ''): string
+    public function pdf(array $report, ?string $director = null, ?array $signatures = null): string
     {
+        $signatures ??= (new ReportSettings())->load();
+        if ($director !== null) $signatures['director_name'] = $director;
+        $director = $signatures['director_name'];
         $pdf=VisitReportPdf::document('รายงานผลการเยี่ยมบ้านผู้เรียน - '.$report['teacher']['firstname'].' '.$report['teacher']['lastname']);
         ob_start(); include APP_ROOT.'/app/views/reports/teacher-pdf.php'; $html=ob_get_clean();
         // Keep each visit below PCRE's HTML size limit for large teacher rosters.

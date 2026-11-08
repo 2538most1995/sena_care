@@ -129,14 +129,10 @@ foreach($v['followups']??[] as $task): ?><p class="formal-caption"><?= $escape($
 <?php if($mapUrl): ?><br><a href="<?= $escape($mapUrl) ?>" style="color:#344d66">เปิดแผนที่ตำแหน่งเช็คอิน</a><?php endif; ?>
 </td><?php if($mapUrl): ?><td style="width:30mm;text-align:center"><barcode code="<?= $escape($mapUrl) ?>" type="QR" size="0.8" error="M" /><br><span class="small">สแกนเปิดแผนที่</span></td><?php endif; ?></tr></table>
 
+<?php if ($signatures['show_reporter'] || $signatures['show_director']): ?>
 <div style="page-break-inside:avoid">
 <h2 class="formal-section">9. &nbsp; การลงนามรับรองรายงาน</h2>
-<table class="formal-signatures"><tr><td>
-ลงชื่อ ....................................................<br>
-(<?= $escape($teacherName) ?>)<br>ครูผู้เยี่ยม / ครูประจำกลุ่ม<br>วันที่ .......... / .......... / ..........
-</td><td>
-ลงชื่อ ....................................................<br>
-(....................................................)<br>ผู้อำนวยการ / ผู้รับทราบรายงาน<br>วันที่ .......... / .......... / ..........
-</td></tr></table>
+<?php $signatureTableClass = 'formal-signatures'; $reporterDefaultName = $teacherName; include APP_ROOT.'/app/views/reports/_signatures.php'; ?>
 </div>
+<?php endif; ?>
 </div>

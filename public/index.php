@@ -305,8 +305,7 @@ try {
     }
 
     if ($path === '/settings') {
-        requireRole('super_admin'); $pageTitle='ตั้งค่าระบบ'; $currentPage='settings';
-        include APP_ROOT.'/app/views/layouts/header.php'; include APP_ROOT.'/app/views/settings/index.php'; include APP_ROOT.'/app/views/layouts/footer.php'; exit;
+        (new SettingController())->settings(); exit;
     }
     if ($path === '/profile' || $path === '/change-password') {
         requireLogin();

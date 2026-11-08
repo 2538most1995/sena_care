@@ -98,7 +98,7 @@ class ReportController
         if (isTeacher()) { $query .= ' AND id=?'; $params[] = currentUserId(); }
         $stmt = $this->pdo->prepare($query.' ORDER BY firstname,lastname,id');
         $stmt->execute($params); $teachers = $stmt->fetchAll();
-        $director = trim((string)($_GET['director'] ?? ''));
+        $director = trim((string)($_GET['director'] ?? (new ReportSettings())->load()['director_name']));
         $director = mb_substr($director,0,150);
         $report = null; $reportError = null;
         try {
