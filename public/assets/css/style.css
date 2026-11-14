@@ -845,6 +845,21 @@ a:hover {
     padding: 2.5rem 1rem;
 }
 
+.empty-state-icon {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+    transition: transform 0.2s var(--ease-out);
+}
+
+.empty-state:hover .empty-state-icon {
+    transform: scale(1.08);
+}
+
 /* ============================================================
    6. Cards, Tables, Buttons, Forms, Badges, Avatars
    ============================================================ */
@@ -939,19 +954,44 @@ a:hover {
 }
 
 .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    vertical-align: middle;
     border-radius: 10px;
     font-weight: 500;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.05rem;
     white-space: nowrap;
     /* Change foreground/background together: cross-fading dark text to white
        briefly makes both colours blend into the button during hover/focus. */
-    transition: transform 0.15s var(--ease-out),
-                border-color 0.15s var(--ease),
-                box-shadow 0.15s var(--ease);
+    transition: transform 0.18s var(--ease-out),
+                background-color 0.18s var(--ease),
+                border-color 0.18s var(--ease),
+                box-shadow 0.18s var(--ease),
+                color 0.18s var(--ease);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
 }
 
 .btn:active {
     transform: translateY(1px) scale(0.99);
+}
+
+.btn > i[class*="bi"] {
+    font-size: 1.05em;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+    transition: transform 0.18s var(--ease-out);
+}
+
+.btn:hover > i.bi-arrow-right,
+.btn:hover > i.bi-arrow-right-short,
+.btn:hover > i.bi-chevron-right {
+    transform: translateX(2px);
 }
 
 .btn-primary {
@@ -968,6 +1008,11 @@ a:hover {
     --bs-btn-active-bg: var(--primary-active);
     --bs-btn-active-border-color: var(--primary-active);
     --bs-btn-focus-shadow-rgb: 4, 57, 94;
+    box-shadow: 0 2px 6px rgba(4, 57, 94, 0.16);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 5px 14px rgba(4, 57, 94, 0.26);
 }
 
 .btn-outline-primary {
@@ -977,17 +1022,28 @@ a:hover {
     --bs-btn-disabled-color: var(--primary-ink);
     --bs-btn-disabled-border-color: var(--primary-color);
     --bs-btn-color: var(--primary-ink);
-    --bs-btn-border-color: var(--primary-color);
+    --bs-btn-border-color: rgba(4, 57, 94, 0.22);
     --bs-btn-hover-bg: var(--primary-color);
     --bs-btn-hover-border-color: var(--primary-color);
     --bs-btn-active-bg: var(--primary-hover);
     --bs-btn-active-border-color: var(--primary-hover);
     --bs-btn-focus-shadow-rgb: 4, 57, 94;
+    box-shadow: 0 1px 2px rgba(4, 57, 94, 0.04);
+}
+
+.btn-outline-primary:hover {
+    box-shadow: 0 4px 12px rgba(4, 57, 94, 0.16);
 }
 
 .btn-link {
     --bs-btn-color: var(--primary-ink);
     --bs-btn-hover-color: var(--primary-hover);
+    text-decoration: none;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+    transform: none;
 }
 
 /* One status system for filled/outline buttons, badges and text. */
@@ -1513,7 +1569,34 @@ a:hover {
 }
 
 .record-value { min-width:0; }
-.dashboard-page .btn-outline-warning { --bs-btn-color: var(--bs-warning-text-emphasis); }
+.dashboard-page .btn-outline-warning {
+    --bs-btn-color: var(--bs-warning-text-emphasis);
+    border-color: rgba(218, 183, 133, 0.6);
+    background-color: var(--warning-subtle);
+}
+.dashboard-page .btn-outline-warning:hover {
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+    color: var(--on-accent);
+    box-shadow: 0 3px 8px rgba(218, 183, 133, 0.35);
+}
+.dashboard-page .btn-outline-success {
+    border-color: rgba(112, 162, 136, 0.6);
+    background-color: var(--success-subtle);
+    color: var(--bs-success-text-emphasis);
+}
+.dashboard-page .btn-outline-success:hover {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    color: var(--surface);
+    box-shadow: 0 3px 8px rgba(112, 162, 136, 0.35);
+}
+.card-head .btn.rounded-pill {
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.32rem 0.85rem;
+    border-width: 1px;
+}
 
 @media(max-width:767.98px) {
     .records-table .record-value { flex:1; min-width:0; text-align:right; }

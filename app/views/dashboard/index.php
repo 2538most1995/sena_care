@@ -89,7 +89,7 @@ $baseUrl = rtrim((require APP_ROOT . '/app/config/config.php')['app_url'], '/');
                 </a>
             </div>
             <div class="col-3">
-                <a href="<?= $baseUrl ?>/students" class="quick-action-card">
+                <a href="<?= $baseUrl ?>/visits" class="quick-action-card">
                     <i class="bi bi-house-heart-fill text-success"></i>
                     <small>เยี่ยมบ้าน</small>
                 </a>
@@ -110,20 +110,49 @@ $baseUrl = rtrim((require APP_ROOT . '/app/config/config.php')['app_url'], '/');
     </div>
 
     <div class="row g-3 mb-4">
-        <div class="col-lg-6"><div class="dashboard-card"><div class="card-head"><h6 class="fw-semibold mb-0">บันทึกเยี่ยมบ้านผู้เรียน</h6></div><div class="card-body-custom"><p class="text-muted">เลือกผู้เรียนประจำกลุ่ม แล้วบันทึกผลการเยี่ยมได้ทันที</p><a class="btn btn-primary" href="<?= e(url('visits')) ?>">เปิดรายชื่อเพื่อบันทึกเยี่ยมบ้าน</a><a class="btn btn-link" href="<?= e(url('visits/history')) ?>">ดูประวัติการเยี่ยม</a></div></div></div>
+        <!-- Home Visit Action Card -->
+        <div class="col-lg-6">
+            <div class="dashboard-card">
+                <div class="card-head">
+                    <h6 class="fw-semibold mb-0 d-flex align-items-center">
+                        <i class="bi bi-house-heart-fill me-2 text-primary"></i>บันทึกเยี่ยมบ้านผู้เรียน
+                    </h6>
+                </div>
+                <div class="card-body-custom d-flex flex-column justify-content-between">
+                    <p class="text-muted mb-3">เลือกผู้เรียนประจำกลุ่ม แล้วบันทึกผลการเยี่ยมได้ทันที</p>
+                    <div class="d-flex flex-wrap align-items-center gap-2 pt-1">
+                        <a class="btn btn-primary" href="<?= e(url('visits')) ?>">
+                            <i class="bi bi-person-lines-fill"></i>
+                            <span>เปิดรายชื่อเพื่อบันทึกเยี่ยมบ้าน</span>
+                            <i class="bi bi-arrow-right-short fs-5"></i>
+                        </a>
+                        <a class="btn btn-outline-primary" href="<?= e(url('visits/history')) ?>">
+                            <i class="bi bi-clock-history"></i>
+                            <span>ดูประวัติการเยี่ยม</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Pending Follow-ups -->
         <div class="col-lg-6">
             <div class="dashboard-card">
                 <div class="card-head">
-                    <h6 class="fw-semibold mb-0"><i class="bi bi-clipboard2-check me-2 text-warning"></i>งานติดตามที่รอดำเนินการ</h6>
-                    <a href="<?= $baseUrl ?>/followups" class="btn btn-sm btn-outline-warning rounded-pill">ดูทั้งหมด</a>
+                    <h6 class="fw-semibold mb-0 d-flex align-items-center">
+                        <i class="bi bi-clipboard2-check me-2 text-warning"></i>งานติดตามที่รอดำเนินการ
+                    </h6>
+                    <a href="<?= $baseUrl ?>/followups" class="btn btn-sm btn-outline-warning rounded-pill">
+                        <span>ดูทั้งหมด</span><i class="bi bi-arrow-right-short"></i>
+                    </a>
                 </div>
                 <div class="card-body-custom">
                     <?php if (empty($pendingFollowups)): ?>
-                    <div class="empty-state py-4">
-                        <i class="bi bi-clipboard2-check fs-1 text-muted"></i>
-                        <p class="text-muted mt-2 mb-0">ไม่มีงานติดตามที่รอดำเนินการ</p>
+                    <div class="empty-state py-4 text-center">
+                        <div class="empty-state-icon bg-warning-subtle text-warning">
+                            <i class="bi bi-clipboard2-check fs-4"></i>
+                        </div>
+                        <p class="text-muted mt-1 mb-0">ไม่มีงานติดตามที่รอดำเนินการ</p>
                     </div>
                     <?php else: ?>
                     <div class="followup-list">
@@ -195,17 +224,23 @@ $baseUrl = rtrim((require APP_ROOT . '/app/config/config.php')['app_url'], '/');
     <!-- Recent Visits -->
     <div class="dashboard-card mb-4">
         <div class="card-head">
-            <h6 class="fw-semibold mb-0"><i class="bi bi-house-heart me-2 text-success"></i>การเยี่ยมบ้านล่าสุด</h6>
-            <a href="<?= $baseUrl ?>/visits" class="btn btn-sm btn-outline-success rounded-pill">ดูทั้งหมด</a>
+            <h6 class="fw-semibold mb-0 d-flex align-items-center">
+                <i class="bi bi-house-heart me-2 text-success"></i>การเยี่ยมบ้านล่าสุด
+            </h6>
+            <a href="<?= $baseUrl ?>/visits" class="btn btn-sm btn-outline-success rounded-pill">
+                <span>ดูทั้งหมด</span><i class="bi bi-arrow-right-short"></i>
+            </a>
         </div>
         <div class="card-body-custom">
             <?php if (empty($recentVisits)): ?>
-            <div class="empty-state py-4">
-                <i class="bi bi-house fs-1 text-muted"></i>
-                <p class="text-muted mt-2 mb-1">ยังไม่มีการเยี่ยมบ้าน</p>
+            <div class="empty-state py-4 text-center">
+                <div class="empty-state-icon bg-success-subtle text-success">
+                    <i class="bi bi-house-heart fs-4"></i>
+                </div>
+                <p class="text-muted mt-1 mb-2">ยังไม่มีการเยี่ยมบ้าน</p>
                 <?php if (hasRole('teacher', 'admin', 'super_admin')): ?>
-                <a href="<?= $baseUrl ?>/students" class="btn btn-sm btn-success rounded-pill mt-2">
-                    <i class="bi bi-plus-lg me-1"></i>บันทึกเยี่ยมบ้าน
+                <a href="<?= $baseUrl ?>/students" class="btn btn-sm btn-success rounded-pill mt-1">
+                    <i class="bi bi-plus-circle me-1"></i><span>บันทึกเยี่ยมบ้าน</span>
                 </a>
                 <?php endif; ?>
             </div>
